@@ -93,10 +93,11 @@ class roundedRectangle:
 class text:
 
     def __init__(self, master: tk.Canvas, position: tuple[int | float, int | float],
-                 text: str, fg: str) -> None:
+                 text: str, fg: str, *, placemode: typing.Literal['normal', 'usable'] = 'usable') -> None:
         self.master = master
 
         self.fill = fg
+        self.placemode = placemode
 
         self.x = position[0]
         self.y = position[1]
@@ -107,5 +108,11 @@ class text:
         
         self.bbox = self.master.bbox(self.canvasId)
         self.width = self.bbox[2] - self.bbox[0]
-        self.height = self.bbox[3] - self.bbox[1]
-        self.master.coords(self.canvasId, self.x+self.width/2, self.y+self.height/2)
+        self.height = self.bbox[3] - self.bbox[1]      
+
+        if placemode == 'usable':
+            self.master.coords(self.canvasId, self.x+self.width/2, self.y+self.height/2)
+
+    def position(self, newPosition: tuple[int | float, int | float]):
+        if self.placemode == 'normal':
+            self.master.coords(self.canvasId, newPosition[0], newPosition[1])
