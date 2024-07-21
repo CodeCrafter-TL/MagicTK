@@ -2,7 +2,7 @@ import tkinter as tk
 import typing
 
 
-class perfectCircle:
+class PerfectCircle:
 
     def __init__(self, master: tk.Canvas, position: tuple[int | float, int | float],
                  radius: int | float, bg: str) -> None:
@@ -19,7 +19,7 @@ class perfectCircle:
             self.x, self.y, self.x+self.diameter, self.y+self.diameter, fill=self.fill, outline=self.fill)
 
 
-class ellipse:
+class Ellipse:
 
     def __init__(self, master: tk.Canvas, position: tuple[int | float, int | float],
                  size: tuple[int | float, int | float], bg: str) -> None:
@@ -36,7 +36,7 @@ class ellipse:
             self.x, self.y, self.x+self.width, self.y+self.height, fill=self.fill, outline=self.fill)
 
 
-class rectangle:
+class Rectangle:
 
     def __init__(self, master: tk.Canvas, position: tuple[int | float, int | float],
                  size: tuple[int | float, int | float], bg: str) -> None:
@@ -53,7 +53,7 @@ class rectangle:
             self.x, self.y, self.x+self.width, self.y+self.height, fill=self.fill, outline=self.fill)
 
 
-class roundedRectangle:
+class RoundedRectangle:
 
     def __init__(self, master: tk.Canvas, position: tuple[int | float, int | float],
                  size: tuple[int | float, int | float], radius: int | float, bg: str) -> None:
@@ -70,27 +70,27 @@ class roundedRectangle:
         self.roundedWidth = self.width - self.radius * 2
         self.roundedHeight = self.height - self.radius * 2
 
-        perfectCircle(self.master, [self.x, self.y], self.radius, self.fill)
-        perfectCircle(self.master, [self.x, self.y +
+        PerfectCircle(self.master, [self.x, self.y], self.radius, self.fill)
+        PerfectCircle(self.master, [self.x, self.y +
                       self.roundedHeight], self.radius, self.fill)
-        perfectCircle(self.master, [
+        PerfectCircle(self.master, [
                       self.x+self.roundedWidth, self.y+self.roundedHeight], self.radius, self.fill)
-        perfectCircle(
+        PerfectCircle(
             self.master, [self.x+self.roundedWidth, self.y], self.radius, self.fill)
-        rectangle(self.master, [self.x, self.y+self.radius],
+        Rectangle(self.master, [self.x, self.y+self.radius],
                   [self.diameter, self.roundedHeight], self.fill)
-        rectangle(self.master, [self.x+self.radius, self.y+self.roundedHeight],
+        Rectangle(self.master, [self.x+self.radius, self.y+self.roundedHeight],
                   [self.roundedWidth, self.diameter], self.fill)
-        rectangle(self.master, [self.x+self.roundedWidth, self.y +
+        Rectangle(self.master, [self.x+self.roundedWidth, self.y +
                   self.radius], [self.diameter, self.roundedHeight], self.fill)
-        rectangle(self.master, [self.x+self.radius, self.y],
+        Rectangle(self.master, [self.x+self.radius, self.y],
                   [self.roundedWidth, self.diameter], self.fill)
 
-        rectangle(self.master, [self.x+self.diameter, self.y+self.diameter],
+        Rectangle(self.master, [self.x+self.diameter, self.y+self.diameter],
                   [self.roundedWidth - self.diameter, self.roundedHeight - self.diameter], self.fill)
 
 
-class text:
+class Text:
 
     def __init__(self, master: tk.Canvas, position: tuple[int | float, int | float],
                  text: str, fg: str, *, placemode: typing.Literal['normal', 'usable'] = 'usable') -> None:
@@ -116,3 +116,6 @@ class text:
     def position(self, newPosition: tuple[int | float, int | float]):
         if self.placemode == 'normal':
             self.master.coords(self.canvasId, newPosition[0], newPosition[1])
+    
+    def text(self, newText: str):
+        self.master.coords(self.canvasId, text=newText)
