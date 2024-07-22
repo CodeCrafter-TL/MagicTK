@@ -52,6 +52,22 @@ class Rectangle:
         self.canvasId = self.master.create_rectangle(
             self.x, self.y, self.x+self.width, self.y+self.height, fill=self.fill, outline=self.fill)
 
+    def _position(self, newPosition: tuple[int | float, int | float]):
+        self.master.coords(
+            self.canvasId, newPosition[0], newPosition[1], newPosition[0]+self.width, newPosition[1]+self.height)
+        self.x = newPosition[0]
+        self.y = newPosition[1]
+
+    def _bg(self, newBg: str):
+        self.master.itemconfigure(self.canvasId, fill=newBg, outline=newBg)
+        self.fill = newBg
+
+    def _size(self, newSize: tuple[int | float, int | float]):
+        self.width = newSize[0]
+        self.height = newSize[1]
+        print(self.x, self.y, self.width, self.height)
+        self.master.coords(self.canvasId, self.x, self.y, self.x+self.width, self.y+self.height)
+
 
 class RoundedRectangle:
 
@@ -105,17 +121,34 @@ class Text:
 
         self.canvasId = self.master.create_text(
             self.x, self.y, text=self.text, fill=self.fill)
-        
+
         self.bbox = self.master.bbox(self.canvasId)
         self.width = self.bbox[2] - self.bbox[0]
-        self.height = self.bbox[3] - self.bbox[1]      
+        self.height = self.bbox[3] - self.bbox[1]
 
-        if placemode == 'usable':
-            self.master.coords(self.canvasId, self.x+self.width/2, self.y+self.height/2)
+        if self.placemode == 'usable':
+            self._usable()
 
-    def position(self, newPosition: tuple[int | float, int | float]):
+    def _position(self, newPosition: tuple[int | float, int | float]):
         if self.placemode == 'normal':
             self.master.coords(self.canvasId, newPosition[0], newPosition[1])
-    
-    def text(self, newText: str):
-        self.master.coords(self.canvasId, text=newText)
+            self.x = newPosition[0]
+            self.y = newPosition[1]
+
+    def _text(self, newText: str):
+        self.master.itemconfigure(self.canvasId, text=newText)
+        self.text = newText
+        if self.placemode == 'usable':
+            self._usable()
+
+    def _fg(self, newFg: str):
+        self.master.itemconfigure(self.canvasId, fill=newFg)
+        self.fill = newFg
+
+    def _usable(self):
+        self.bbox = self.master.bbox(self.canvasId)
+        self.width = self.bbox[2] - self.bbox[0]
+        self.height = self.bbox[3] - self.bbox[1]
+
+        self.master.coords(self.canvasId, self.x +
+                           self.width/2, self.y+self.height/2)
