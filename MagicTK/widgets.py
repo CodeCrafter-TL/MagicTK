@@ -1,15 +1,16 @@
 import tkinter as tk
-from . import tkShadow as tks
+import tkShadow as tks
 import typing
 
 from . import graphics as gh
+from . import animations as amt
 
 
 class BaseWidget:
 
     def __init__(self, master: tk.Canvas, position: tuple[int | float, int | float],
                  size: tuple[int | float, int | float], text: str, bg: str, fg: str,
-                 command: typing.Callable | None = None) -> None:
+                 command: typing.Callable[..., typing.Any] | None = None) -> None:
         self.master = master
 
         self.text = text
@@ -33,7 +34,7 @@ class BaseWidget:
 
     def config(self, **kw):
         ...
-    
+
     def create_shadow(self, *args):
         ...
 
@@ -42,7 +43,7 @@ class Button(BaseWidget):
 
     def __init__(self, master: tk.Canvas, position: tuple[int | float, int | float],
                  size: tuple[int | float, int | float], text: str, bg: str, fg: str,
-                 command: typing.Callable | None = None) -> None:
+                 command: typing.Callable[..., typing.Any] | None = None) -> None:
         super().__init__(master, position, size, text, bg, fg, command)
 
         self.displayText = gh.Text(
@@ -94,13 +95,37 @@ class Button(BaseWidget):
             self.displayText._fg(kw["fg"])
             return
         return
-    
+
     @typing.override
     def create_shadow(self, offset: tuple[int | float, int | float], blur_radius: int | float = 4.5,
                       color: str = "#000000"):
-        self.shadow = tks.Shadow(self.background.canvasId, self.master, offset[0], offset[1], blur_radius, color)
+        self.shadow = tks.Shadow(
+            self.background.canvasId, self.master, offset[0], offset[1], blur_radius, color)
         self.shadow.show()
         self.master.lift(self.displayText.canvasId, self.background.canvasId)
+
+
+class RoundedButton(BaseWidget):
+
+    def __init__(self, master: tk.Canvas, position: tuple[int | float, int | float],
+                 size: tuple[int | float, int | float], radius: int | float, text: str, bg: str, fg: str,
+                 command: typing.Callable[..., typing.Any] | None = None) -> None:
+        super().__init__(master, position, size, text, bg, fg, command)
+
+        self.radius = radius
+
+        self.displayText = gh.Text(
+            self.master, [0, 0], self.text, self.color, placemode='normal')
+        self.background = gh.RoundedRectangle(self.master, position,
+                                              [self.displayText.width+15, self.displayText.height+15], self.radius,
+                                              self.fill)
+
+        self.displayText._position([self.x+self.width/2, self.y+self.height/2])
+        print([self.x+self.width/2, self.y+self.height/2])
+        
+        for Id in self.background.canvasId:
+            Id: gh.PerfectCircle | gh.Rectangle
+            self.master.lift(self.displayText.canvasId, Id.canvasId)
 
 
 class Label(BaseWidget):

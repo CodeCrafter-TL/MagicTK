@@ -62,19 +62,13 @@ class Rectangle:
         self.master.itemconfigure(self.canvasId, fill=newBg, outline=newBg)
         self.fill = newBg
 
-    def _size(self, newSize: tuple[int | float, int | float]):
-        self.width = newSize[0]
-        self.height = newSize[1]
-        print(self.x, self.y, self.width, self.height)
-        self.master.coords(self.canvasId, self.x, self.y, self.x+self.width, self.y+self.height)
-
 
 class RoundedRectangle:
-
     def __init__(self, master: tk.Canvas, position: tuple[int | float, int | float],
-                 size: tuple[int | float, int | float], radius: int | float, bg: str) -> None:
+                 size: tuple[int | float, int | float], radius: int | float, bg: str,
+                 command: typing.Callable | None = None) -> None:
         self.master = master
-
+        self._command = command
         self.fill = bg
         self.radius = radius
         self.diameter = self.radius * 2
@@ -85,25 +79,32 @@ class RoundedRectangle:
         self.height = size[1]
         self.roundedWidth = self.width - self.radius * 2
         self.roundedHeight = self.height - self.radius * 2
-
-        PerfectCircle(self.master, [self.x, self.y], self.radius, self.fill)
-        PerfectCircle(self.master, [self.x, self.y +
-                      self.roundedHeight], self.radius, self.fill)
-        PerfectCircle(self.master, [
-                      self.x+self.roundedWidth, self.y+self.roundedHeight], self.radius, self.fill)
-        PerfectCircle(
+        self.c1 = PerfectCircle(
+            self.master, [self.x, self.y], self.radius, self.fill)
+        self.c2 = PerfectCircle(self.master, [self.x, self.y +
+                                              self.roundedHeight], self.radius, self.fill)
+        self.c3 = PerfectCircle(self.master, [
+            self.x+self.roundedWidth, self.y+self.roundedHeight], self.radius, self.fill)
+        self.c4 = PerfectCircle(
             self.master, [self.x+self.roundedWidth, self.y], self.radius, self.fill)
-        Rectangle(self.master, [self.x, self.y+self.radius],
-                  [self.diameter, self.roundedHeight], self.fill)
-        Rectangle(self.master, [self.x+self.radius, self.y+self.roundedHeight],
-                  [self.roundedWidth, self.diameter], self.fill)
-        Rectangle(self.master, [self.x+self.roundedWidth, self.y +
-                  self.radius], [self.diameter, self.roundedHeight], self.fill)
-        Rectangle(self.master, [self.x+self.radius, self.y],
-                  [self.roundedWidth, self.diameter], self.fill)
+        self.r1 = Rectangle(self.master, [self.x, self.y+self.radius],
+                            [self.diameter, self.roundedHeight], self.fill)
+        self.r2 = Rectangle(self.master, [self.x+self.radius, self.y+self.roundedHeight],
+                            [self.roundedWidth, self.diameter], self.fill)
+        self.r3 = Rectangle(self.master, [self.x+self.roundedWidth, self.y +
+                                          self.radius], [self.diameter, self.roundedHeight], self.fill)
+        self.r4 = Rectangle(self.master, [self.x+self.radius, self.y],
+                            [self.roundedWidth, self.diameter], self.fill)
 
-        Rectangle(self.master, [self.x+self.diameter, self.y+self.diameter],
-                  [self.roundedWidth - self.diameter, self.roundedHeight - self.diameter], self.fill)
+        self.mainr = Rectangle(self.master, [self.x+self.diameter, self.y+self.diameter],
+                               [self.roundedWidth - self.diameter, self.roundedHeight - self.diameter], self.fill)
+
+        self.canvasId = [self.c1, self.c2, self.c3, self.c4,
+                         self.r1, self.r2, self.r3, self.r4, self.mainr]
+
+    def bind(self, *ids: PerfectCircle | Rectangle, sequence, func=None):
+        for item in ids:
+            self.master.tag_bind(item.canvasId, sequence, func)
 
 
 class Text:
@@ -128,6 +129,8 @@ class Text:
 
         if self.placemode == 'usable':
             self._usable()
+        elif self.placemode != 'normal':
+            raise ValueError(f"Uknown place mode: {self.placemode}")
 
     def _position(self, newPosition: tuple[int | float, int | float]):
         if self.placemode == 'normal':
