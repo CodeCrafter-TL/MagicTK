@@ -1,5 +1,8 @@
 import tkinter as tk
+from PIL import ImageTk
 import typing
+
+from . import tools
 
 
 class PerfectCircle:
@@ -39,7 +42,7 @@ class Ellipse:
 class Rectangle:
 
     def __init__(self, master: tk.Canvas, position: tuple[int | float, int | float],
-                 size: tuple[int | float, int | float], bg: str) -> None:
+                 size: tuple[int | float, int | float], bg: str, alpha: float | int = 1) -> None:
         self.master = master
 
         self.fill = bg
@@ -49,8 +52,13 @@ class Rectangle:
         self.width = size[0]
         self.height = size[1]
 
-        self.canvasId = self.master.create_rectangle(
-            self.x, self.y, self.x+self.width, self.y+self.height, fill=self.fill, outline=self.fill)
+        if alpha >= 1:
+            self.canvasId = self.master.create_rectangle(
+                self.x, self.y, self.x+self.width, self.y+self.height, fill=self.fill, outline=self.fill)
+        else:
+            self.image = tools.create_image(size, self.master.winfo_rgb(self.fill) + (int(alpha*255), ))
+            self.canvasId = [self.master.create_rectangle(self.x, self.y, self.x+self.width, self.y+self.height),
+                             self.master.create_image(self.x+self.width/2, self.y+self.height/2, image=ImageTk.PhotoImage(self.image))]
 
     def _position(self, newPosition: tuple[int | float, int | float]):
         self.master.coords(
@@ -106,6 +114,26 @@ class RoundedRectangle:
         for item in ids:
             self.master.tag_bind(item.canvasId, sequence, func)
 
+class TopRoundedRectangle:
+
+    def __init__(self, master: tk.Canvas, position: tuple[int | float, int | float],
+                 size: tuple[int | float, int | float], radius: int | float, bg: str) -> None:
+        self.master = master
+        self.fill = bg
+        self.radius = radius
+        self.diameter = self.radius * 2
+
+        self.x = position[0]
+        self.y = position[1]
+        self.width = size[0]
+        self.height = size[1]
+        self.roundedWidth = self.width - self.radius * 2
+        self.roundedHeight = self.height - self.radius * 2
+
+        self.c1 = PerfectCircle(self.master, position, self.radius, self.fill)
+        self.c2 = PerfectCircle(self.master, [self.x+self.roundedWidth, self.y], self.radius, self.fill)
+        self.r1 = Rectangle(self.master, [self.x, self.y+self.radius], [self.width, self.height-self.radius], self.fill)
+        self.r2 = Rectangle(self.master, [self.x+self.radius, self.y], [self.roundedWidth, self.radius], self.fill)
 
 class Text:
 

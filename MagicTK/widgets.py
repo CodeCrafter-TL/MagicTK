@@ -117,12 +117,13 @@ class RoundedButton(BaseWidget):
         self.displayText = gh.Text(
             self.master, [0, 0], self.text, self.color, placemode='normal')
         self.background = gh.RoundedRectangle(self.master, position,
-                                              [self.displayText.width+15, self.displayText.height+15], self.radius,
+                                              [self.displayText.width+15,
+                                                  self.displayText.height+15], self.radius,
                                               self.fill)
 
         self.displayText._position([self.x+self.width/2, self.y+self.height/2])
         print([self.x+self.width/2, self.y+self.height/2])
-        
+
         for Id in self.background.canvasId:
             Id: gh.PerfectCircle | gh.Rectangle
             self.master.lift(self.displayText.canvasId, Id.canvasId)
@@ -148,3 +149,80 @@ class Label(BaseWidget):
             self.displayText._fg(kw["text"])
             return
         return
+
+
+class Menu:
+
+    def __init__(self,
+                 master: tk.Canvas,
+                 bg: str,
+                 bd: str,
+                 fg: str
+                 ) -> None:
+        self.master = master
+        self.bg = bg
+        self.bd = bd
+        self.fg = fg
+
+        self.width = master.winfo_reqwidth()
+        self.height = 25
+
+        self.menu = {}
+        self.x = 0
+
+        self.canvas_id = self.master.create_rectangle(
+            0, 0, 0+self.width, 0+self.height, fill=self.bg, outline=self.bd)
+
+        self.shadow = tks.Shadow(
+            self.canvas_id, self.master, 0, 1.75, 10, "#000000")
+        self.shadow.show()
+
+    def add_command(self,
+                    label: str,
+                    command: typing.Callable[..., typing.Any] | None
+                    ) -> str:
+        frame_id = self.master.create_rectangle(
+            0, 0, 0, 0, fill=self.bg, outline=self.bg)
+        text_id = self.master.create_text(0, 0, text=label, fill=self.fg)
+        text_bbox = self.master.bbox(text_id)
+        self.master.coords(
+            text_id, self.x + 10 + (text_bbox[2] - text_bbox[0]) / 2, 25 / 2)
+        self.master.coords(frame_id, self.x+5, 0, self.x +
+                           10+5+(text_bbox[2]-text_bbox[0]), 25)
+        self.x += text_bbox[2] - text_bbox[0] + 10
+        self.master.tag_bind(
+            frame_id, "<Button-1>", lambda _e: self.__command_click(label))
+        self.master.tag_bind(
+            text_id, "<Button-1>", lambda _e: self.__command_click(label))
+        self.menu[label] = [[frame_id, text_id], command]
+        return label
+
+    def __command_click(self, label: str):
+        frame_id = self.menu[label][0][0]
+        text_id = self.menu[label][0][1]
+        self.master.itemconfigure(frame_id, fill=self.__darken_color(
+            self.bg), outline=self.__darken_color(self.bg))
+        self.master.tag_bind(frame_id, "<ButtonRelease-1>",
+                             lambda _e: self.__command_endclick(label))
+        self.master.tag_bind(text_id, "<ButtonRelease-1>",
+                             lambda _e: self.__command_endclick(label))
+        if self.menu[label][1]:
+            self.menu[label][1]()
+
+    def __command_endclick(self, label: str):
+        frame_id = self.menu[label][0][0]
+        text_id = self.menu[label][0][1]
+        self.master.itemconfigure(frame_id, fill=self.bg, outline=self.bg)
+        self.master.tag_bind(
+            frame_id, "<Button-1>", lambda _e: self.__command_click(label))
+        self.master.tag_bind(
+            text_id, "<Button-1>", lambda _e: self.__command_click(label))
+
+    def __darken_color(self, hex_color: str, factor: float | int = 0.7) -> str:
+        hex_color = hex_color.lstrip('#')
+        rgb = tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
+
+        dark_rgb = tuple(int(max(0, c * factor)) for c in rgb)
+        dark_hex = '#{:02x}{:02x}{:02x}'.format(*dark_rgb)
+
+        return dark_hex
