@@ -153,12 +153,7 @@ class Label(BaseWidget):
 
 class Menu:
 
-    def __init__(self,
-                 master: tk.Canvas,
-                 bg: str,
-                 bd: str,
-                 fg: str
-                 ) -> None:
+    def __init__(self, master: tk.Canvas, bg: str, bd: str, fg: str) -> None:
         self.master = master
         self.bg = bg
         self.bd = bd
