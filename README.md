@@ -1,3 +1,5 @@
+<!-- From: https://github.com/xiaokang2022/tkintertools/readme.md -->
+
 <h1 align="center">MagicTK</h1>
 
 <p align="center">
@@ -38,3 +40,5 @@
 
 * 🔖 最新版本 : `1.0.0.beta1`
 * 🕓 发布日期 : 2024-08-09
+
+* 本 README 采用了 tkintertools 的样式。
