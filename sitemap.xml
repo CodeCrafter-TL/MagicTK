@@ -2,47 +2,52 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://codecrafter-tl.github.io/magictk/</loc>
-         <lastmod>2024-08-13</lastmod>
+         <lastmod>2024-08-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://codecrafter-tl.github.io/magictk/tutorials/0-1/</loc>
-         <lastmod>2024-08-13</lastmod>
+         <lastmod>2024-08-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://codecrafter-tl.github.io/magictk/tutorials/1-1/</loc>
-         <lastmod>2024-08-13</lastmod>
+         <lastmod>2024-08-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://codecrafter-tl.github.io/magictk/tutorials/1-2/</loc>
-         <lastmod>2024-08-13</lastmod>
+         <lastmod>2024-08-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://codecrafter-tl.github.io/magictk/tutorials/2-1/</loc>
-         <lastmod>2024-08-13</lastmod>
+         <lastmod>2024-08-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://codecrafter-tl.github.io/magictk/tutorials/2-2/</loc>
-         <lastmod>2024-08-13</lastmod>
+         <lastmod>2024-08-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://codecrafter-tl.github.io/magictk/tutorials/2-3/</loc>
-         <lastmod>2024-08-13</lastmod>
+         <lastmod>2024-08-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://codecrafter-tl.github.io/magictk/tutorials/3-1/</loc>
-         <lastmod>2024-08-13</lastmod>
+         <lastmod>2024-08-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://codecrafter-tl.github.io/magictk/tutorials/3-2/</loc>
-         <lastmod>2024-08-13</lastmod>
+         <lastmod>2024-08-14</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://codecrafter-tl.github.io/magictk/tutorials/3-3/</loc>
+         <lastmod>2024-08-14</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>
